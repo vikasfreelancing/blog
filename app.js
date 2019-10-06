@@ -78,8 +78,7 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log(profile);
-
-    User.findOrCreate({ googleId: profile.id ,name:profile.displayName}, function (err, user) {
+    User.findOrCreate({ googleId: profile.id},{name:profile.displayName}, function (err, user) {
       return cb(err, user);
     });
   }
@@ -260,7 +259,7 @@ app.post("/compose", function(req, res) {
     else{
       user.posts.push(post)
       user.save()
-        res.redirect("/userHome");
+      res.redirect("/userHome");
     }
   })
 });
@@ -283,21 +282,6 @@ app.get("/posts/:postId/:userId", function(req, res) {
           });
         }
       })
-    }
-  })
-
-  Post.findOne({
-    _id: postId
-  }, function(err, post) {
-    console.log(post)
-    if (err) {
-      //error page
-    }
-    if (post != null) {
-      res.render("post", {
-        title: post.title,
-        content: post.content
-      });
     }
   })
 });
