@@ -260,16 +260,7 @@ app.post("/compose", function(req, res) {
     else{
       user.posts.push(post)
       user.save()
-    }
-  })
-
-
-  Post.create(post, function(err) {
-    if (err) {
-      console.log(err);
-    }
-    if (!err) {
-      res.redirect("/");
+        res.redirect("/userHome");
     }
   })
 });
