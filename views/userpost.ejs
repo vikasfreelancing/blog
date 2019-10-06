@@ -1,7 +1,7 @@
 <%- include("partials/userHomeHeader"); -%>
 
   <h1><%=title%></h1>
-  <p><%=content%></p>
+  <p class="bgnew"><%=content%></p>
   <form class="" action="/editpost" method="post">
     <button class="btn btn-primary" type="submit" name="button">Edit Post</button>
     <input type="hidden" name="userId" value="<%=user._Id%>">

@@ -10,11 +10,13 @@
 <%if(posts.length == 0){%>
   <p class="cbig">OPPS! no one write anything yet come on you can be the first</p>
 <%}%>
-<%  posts.forEach(function(post){ %>
+<%if(posts.length!=0){%>
   <p class="cbig">Our posts</p>
   <hr>
+<%}%>
+<%  posts.forEach(function(post){ %>
 <h1><%=post.title%></h1>
-<p>
+<p class="bgnew">
   <%=post.content.substring(0, 100) + " ..."%>
   <a href="/posts/<%=post._id%>/<%=post.userId%>">Read More</a>
   <div>
