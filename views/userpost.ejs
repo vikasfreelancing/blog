@@ -1,0 +1,10 @@
+<%- include("partials/userHomeHeader"); -%>
+
+  <h1><%=title%></h1>
+  <p><%=content%></p>
+  <form class="" action="/editpost" method="post">
+    <button class="btn btn-primary" type="submit" name="button">Edit Post</button>
+    <input type="hidden" name="userId" value="<%=user._Id%>">
+    <input type="hidden" name="postId" value="<%=postId%>">
+  </form>
+<%- include("partials/footer"); -%>

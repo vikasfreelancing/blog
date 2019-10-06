@@ -13,10 +13,11 @@ const mongoAtlasUrl = "mongodb+srv://root:Angel11papa@cluster0-nugqv.mongodb.net
 const localHostDb = "mongodb://localhost:27017";
 const app = express();
 const PORT = process.env.PORT || 3000
-const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
-const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
-const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
+const homeStartingContent = "";
+const aboutContent = "This website  was built to help people get started with building a website or blog so they can help fund their lifestyle. So many people work their fingers to the bone to earn a living, working 40+ hours a week, never seeing their kids grow up and never being able to afford the good things in life.";
+
+const contactContent = "Coming soon"
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -40,10 +41,16 @@ const postSchema =  new mongoose.Schema({
   content: String
 });
 const userSchema = new mongoose.Schema ({
+  name:String,
+  dob:Date,
+  mobile:String,
+  facebookUrl:String,
+  facebookId:String,
   email: String,
   password: String,
   googleId: String,
-  secret: [postSchema]
+  imageUrl:String,
+  posts: [postSchema]
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -72,7 +79,7 @@ passport.use(new GoogleStrategy({
   function(accessToken, refreshToken, profile, cb) {
     console.log(profile);
 
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    User.findOrCreate({ googleId: profile.id ,name:profile.displayName}, function (err, user) {
       return cb(err, user);
     });
   }
@@ -86,16 +93,33 @@ app.get("/auth/google/secrets",
   passport.authenticate('google', { failureRedirect: "/login" }),
   function(req, res) {
     // Successful authentication, redirect to secrets.
-    res.redirect("/secrets");
+    res.redirect("/userHome");
   });
 
 app.get("/login", function(req, res){
+  if (req.isAuthenticated()){
+  res.render("userHome",{user:req.user});
+} else {
   res.render("login");
+}
 });
 
 app.get("/register", function(req, res){
+  if (req.isAuthenticated()){
+  res.render("userHome");
+} else {
   res.render("register");
+}
 });
+
+app.get("/userHome",function(req,res){
+  //console.log(req.user)
+  if (req.isAuthenticated()){
+  res.render("userHome",{user:req.user});
+} else {
+  res.redirect("/login");
+}
+})
 
 // app.get("/secrets", function(req, res){
 //   User.find({"secret": {$ne: null}}, function(err, foundUsers){
@@ -136,13 +160,13 @@ app.get("/logout", function(req, res){
 
 app.post("/register", function(req, res){
 
-  User.register({username: req.body.username}, req.body.password, function(err, user){
+  User.register({username: req.body.username,name:req.body.name,dob:req.body.dob}, req.body.password, function(err, user){
     if (err) {
       console.log(err);
       res.redirect("/register");
     } else {
       passport.authenticate("local")(req, res, function(){
-        res.redirect("/secrets");
+        res.redirect("/userHome");
       });
     }
   });
@@ -161,7 +185,7 @@ app.post("/login", function(req, res){
       console.log(err);
     } else {
       passport.authenticate("local")(req, res, function(){
-        res.redirect("/secrets");
+        res.redirect("/userHome");
       });
     }
   });
@@ -174,12 +198,35 @@ app.post("/login", function(req, res){
 
 //blog app
 app.get("/", function(req, res) {
-  Post.find(function(err, posts) {
-    console.log(posts)
-    res.render("home", {
-      startingContent: homeStartingContent,
-      posts: posts
-    });
+
+  User.find(function(err,users){
+    //console.log(users)
+    if(err){
+      console.log(err);
+    }
+    else{
+      const posts =[]
+      users.forEach(function(user){
+        user.posts.forEach(function(post){
+          let mypost={
+            _id:post._id,
+            title:post.title,
+            content:post.content,
+            userId:user._id,
+            author:user.name
+          }
+        //  console.log(mypost)
+          posts.push(mypost)
+        })
+        //console.log(user.posts)
+        //posts.push(user.posts)
+      })
+      //console.log(posts)
+      res.render("home", {
+        startingContent: homeStartingContent,
+        posts: posts
+      });
+    }
   })
 });
 
@@ -196,14 +243,27 @@ app.get("/contact", function(req, res) {
 });
 
 app.get("/compose", function(req, res) {
-  res.render("compose");
+  res.render("compose",{user:req.user});
 });
 
 app.post("/compose", function(req, res) {
+
+  const userId = req.body.userId;
   const post = {
     title: req.body.postTitle,
     content: req.body.postBody
   };
+  User.findOne({_id:userId},function(err,user){
+    if(err){
+      console.log(err)
+    }
+    else{
+      user.posts.push(post)
+      user.save()
+    }
+  })
+
+
   Post.create(post, function(err) {
     if (err) {
       console.log(err);
@@ -214,8 +274,27 @@ app.post("/compose", function(req, res) {
   })
 });
 
-app.get("/posts/:post", function(req, res) {
-  const postId = req.params.post;
+app.get("/posts/:postId/:userId", function(req, res) {
+  const postId = req.params.postId;
+  const userId = req.params.userId;
+
+  User.findOne({_id:userId},function(err,user){
+    if(err){
+      console.log(err)
+    }
+    else{
+      user.posts.forEach(function(post){
+        if(post._id == postId){
+          res.render("post", {
+            title: post.title,
+            content: post.content,
+            user:user
+          });
+        }
+      })
+    }
+  })
+
   Post.findOne({
     _id: postId
   }, function(err, post) {
@@ -232,11 +311,62 @@ app.get("/posts/:post", function(req, res) {
   })
 });
 
+app.get("/userposts/:postId", function(req, res) {
+
+  const postId = req.params.postId;
+  const userId = req.user;
+  console.log(req.user)
+  const posts = req.user.posts;
+//  console.log(posts)
+  //console.log(posts)
+  posts.forEach(function(post){
+    if(post._id == postId){
+      res.render("userpost", {
+        user:req.user,
+        postId:postId,
+        title: post.title,
+        content: post.content
+      });
+    }
+  })
+});
+
+app.post("/editpost",function(req,res){
+   const postId = req.body.postId;
+   const userId = req.body.userId;
+   const posts = req.user.posts;
+   posts.forEach(function(post){
+     if(post._id == postId){
+       res.render("editpost", {
+         user:req.user,
+         userId:userId,
+         postId:postId,
+         title: post.title,
+         content: post.content
+       });
+     }
+   })
+})
 
 
+app.post("/savepost",function(req,res){
+  const user = req.user;
+  const postId = req.body.postId
+  const posts = req.user.posts;
+  const title= req.body.postTitle
+  const content= req.body.postBody
+  posts.forEach(function(post){
+    if(post._id == postId){
+     post.title = title;
+     post.content=content;
+    }
+  })
+  req.user.save()
+  res.redirect("/userHome")
 
+})
 
 
 app.listen(PORT, function() {
-  console.log("Server started on port "+PORT);
+  console.log("Server started on port 3000."+PORT);
 });

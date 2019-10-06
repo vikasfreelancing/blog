@@ -1,0 +1,17 @@
+<%- include("partials/userHomeHeader",{user:user}); -%>
+    <%if(user.posts.length==0){%>
+      <h1>OOPS!! you have not posted anything yet</h1>
+    <%}%>
+    <%if(user.posts.length!=0){%>
+    <%  user.posts.forEach(function(post){ %>
+
+    <h1><%=post.title%></h1>
+    <p>
+      <%=post.content.substring(0, 100) + " ..."%>
+      <a href="/userposts/<%=post._id%>">Read More</a>
+    </p>
+
+
+    <% }) %>
+    <%}%>
+<%- include("partials/footer"); -%>

@@ -32,9 +32,27 @@ html {
 	height: 60px;
 	background-color: #1abc9c;
 }
+h4{
+  color: #BD18AC;
+  font-weight: 300;
+  font-family:fantasy;
+
+}
 
 .footer p {
 	margin-top: 25px;
 	font-size: 12px;
   color: #fff;
+}
+.bg{
+  font-weight: 1100;
+  font-size: 2rem;
+  padding: 1rem;
+  color: #719E98;
+}
+.cbig{
+  color: #600595;
+  font-weight: 1100;
+  font-size: 3rem;
+  padding: 1rem;
 }

@@ -1,19 +1,29 @@
-
 <%- include("partials/header"); -%>
-    <h1>Home</h1>
-    <p> <%= startingContent %> </p>
 
+<p class="bg"> “Too often, feeling intimidated becomes our excuse not to be awesome.” </p>
+<h4>Scott Stratten</h4>
+<p class="bg">Are you still dreaming of starting a  blog or a business? Do you want to change your life? Are you too afraid and intimidated to actually do it?</p>
+<p class="bg">What is the worst that can happen? You won’t get what you wanted. What is the best that can happen? It can be awesome. Dare to be awesome!</p>
+<p class="bg">Don’t Settle: Don’t finish crappy books. If you don’t like the menu, leave the restaurant. If you’re not on the right path get off it.</p>
+<h4>Chris Brogan</h4>
+<hr>
+<%if(posts.length == 0){%>
+  <p class="cbig">OPPS! no one write anything yet come on you can be the first</p>
+<%}%>
+<%  posts.forEach(function(post){ %>
+  <p class="cbig">Our posts</p>
+  <hr>
+<h1><%=post.title%></h1>
+<p>
+  <%=post.content.substring(0, 100) + " ..."%>
+  <a href="/posts/<%=post._id%>/<%=post.userId%>">Read More</a>
+  <div>
+    <h4>Written by <%=post.author%><h4>
+  </div>
+</p>
+<hr>
 
-  <%  posts.forEach(function(post){ %>
-
-    <h1><%=post.title%></h1>
-    <p>
-    <%=post.content.substring(0, 100) + " ..."%>
-    <a href="/posts/<%=post._id%>">Read More</a>
-    </p>
-
-
-    <% }) %>
+<% }) %>
 
 
 <%- include("partials/footer"); -%>
