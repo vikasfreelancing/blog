@@ -18,7 +18,7 @@ const homeStartingContent = "";
 const aboutContent = "This website  was built to help people get started with building a website or blog so they can help fund their lifestyle. So many people work their fingers to the bone to earn a living, working 40+ hours a week, never seeing their kids grow up and never being able to afford the good things in life.";
 
 const contactContent = "Coming soon"
-app.use(express.static(__dirname+"public"));
+app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
