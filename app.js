@@ -12,7 +12,7 @@ const findOrCreate = require('mongoose-findorcreate');
 const mongoAtlasUrl = "mongodb+srv://root:Angel11papa@cluster0-nugqv.mongodb.net"
 const localHostDb = "mongodb://localhost:27017";
 const app = express();
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 80
 
 const homeStartingContent = "";
 const aboutContent = "This website  was built to help people get started with building a website or blog so they can help fund their lifestyle. So many people work their fingers to the bone to earn a living, working 40+ hours a week, never seeing their kids grow up and never being able to afford the good things in life.";
@@ -343,5 +343,5 @@ app.post("/savepost",function(req,res){
 
 
 app.listen(PORT, function() {
-  console.log("Server started on port 3000."+PORT);
+  console.log("Server started on port "+PORT);
 });
