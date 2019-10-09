@@ -73,7 +73,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://fierce-ravine-20519.herokuapp.com/auth/google/secrets",
+    callbackURL: "http://ec2-13-235-33-152.ap-south-1.compute.amazonaws.com:3000/auth/google/secrets",
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
